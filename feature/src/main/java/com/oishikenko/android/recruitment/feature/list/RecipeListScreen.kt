@@ -13,6 +13,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,7 +32,10 @@ fun RecipeListScreen(
             TopAppBar(
                 modifier = Modifier,
             ) {
-                Text(text = stringResource(id = R.string.cooking_records_title))
+                Text(
+                    text = stringResource(id = R.string.cooking_records_title),
+                    color = Color.Black,
+                )
             }
         }
     ) { innerPadding ->

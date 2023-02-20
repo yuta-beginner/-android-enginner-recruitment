@@ -1,18 +1,40 @@
 package com.oishikenko.android.recruitment.feature.list
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+
+import android.provider.SyncStateContract.Columns
+import android.util.Log
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomEnd
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalOf
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.oishikenko.android.recruitment.data.model.CookingRecord
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import androidx.compose.ui.Alignment.Companion.Bottom
+import androidx.compose.ui.Alignment.Companion.BottomStart
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun RecipeListItem(
@@ -23,17 +45,50 @@ fun RecipeListItem(
             .fillMaxWidth()
             .padding(
                 horizontal = 16.dp,
-                vertical = 8.dp,
-            ),
-    ) {
+                vertical = 8.dp
+            )
+            .clip(RoundedCornerShape(8.dp))
+            .border(
+                width = 1.dp,
+                color = Color(220,224,224),
+                shape = RoundedCornerShape(8.dp)
+            )
+    )
+    {
         AsyncImage(
             model = cookingRecord.imageUrl,
             contentDescription = cookingRecord.comment,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(96.dp)
-                .clip(RoundedCornerShape(4.dp)),
+                //.clip(RoundedCornerShape(8.dp))
         )
+        Column(
+            modifier = Modifier
+                .height(96.dp)
+                .padding(
+                    horizontal = 8.dp,
+                    vertical = 12.dp
+                )
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = translateRecipeTypeToJapanese(cookingRecord.recipeType),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(51,51,51,255),
+                modifier = Modifier
+                    .weight(1f)
+                    .wrapContentSize(Alignment.BottomStart)
+            )
+            Text(
+                text = formatRecordedAt(cookingRecord.recordedAt),
+                fontSize = 14.sp,
+                color = Color(103,103,103,255),
+                modifier = Modifier
+                    .weight(1f)
+            )
+        }
     }
 }
 
@@ -48,4 +103,25 @@ fun PreviewRecipeListItem() {
             recordedAt = "2018-05-01 17:57:31"
         )
     )
+}
+
+fun translateRecipeTypeToJapanese(recipeType: String):String{
+    var convertedRecipeType:String = recipeType
+    if (recipeType.equals("soup")){
+        convertedRecipeType = "スープ"
+    } else if(recipeType.equals("main_dish")) {
+        convertedRecipeType = "主菜/主食"
+    } else {
+        convertedRecipeType = "副菜"
+    }
+    return convertedRecipeType
+}
+
+fun formatRecordedAt(recordedAt: String):String {
+    val recordedAtDate = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+    var formattedDate:Date = recordedAtDate.parse(recordedAt)
+    val viewFormat = SimpleDateFormat("yyyy/MM/dd hh:mm")
+    var strFormattedDate:String = viewFormat.format(formattedDate)
+    Log.d("RecipeListItem", strFormattedDate)
+    return strFormattedDate
 }
