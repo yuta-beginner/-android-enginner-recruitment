@@ -63,6 +63,11 @@ fun RecipeListItem(
                 .size(96.dp)
                 //.clip(RoundedCornerShape(8.dp))
         )
+        /**
+         * issues#2の実装
+         * 1. Columnで2カ所のテキストエリアを作る。
+         * 2.
+         */
         Column(
             modifier = Modifier
                 .height(96.dp)
@@ -72,6 +77,7 @@ fun RecipeListItem(
                 )
                 .fillMaxWidth()
         ) {
+            // 日本語変換したrecipeTypeを表示するテキスト部分
             Text(
                 text = translateRecipeTypeToJapanese(cookingRecord.recipeType),
                 fontSize = 14.sp,
@@ -81,6 +87,7 @@ fun RecipeListItem(
                     .weight(1f)
                     .wrapContentSize(Alignment.BottomStart)
             )
+            // フォーマット変換したrecordedAtを表示するテキスト部分
             Text(
                 text = formatRecordedAt(cookingRecord.recordedAt),
                 fontSize = 14.sp,
@@ -105,6 +112,10 @@ fun PreviewRecipeListItem() {
     )
 }
 
+/**
+ * issues#2の実装
+ * 取得したrecipeTypeの文字列に応じて日本語変換するメソッド
+ */
 fun translateRecipeTypeToJapanese(recipeType: String):String{
     var convertedRecipeType:String = recipeType
     if (recipeType.equals("soup")){
@@ -117,11 +128,14 @@ fun translateRecipeTypeToJapanese(recipeType: String):String{
     return convertedRecipeType
 }
 
+/**
+ * issues#2の実装
+ * 取得したrecordedAtの文字列に応じてyyyy/MM/dd hh:mmのフォーマットに変換するメソッド
+ */
 fun formatRecordedAt(recordedAt: String):String {
     val recordedAtDate = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
     var formattedDate:Date = recordedAtDate.parse(recordedAt)
     val viewFormat = SimpleDateFormat("yyyy/MM/dd hh:mm")
     var strFormattedDate:String = viewFormat.format(formattedDate)
-    Log.d("RecipeListItem", strFormattedDate)
     return strFormattedDate
 }
